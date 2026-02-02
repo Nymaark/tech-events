@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a56db"/>
+      <stop offset="100%" style="stop-color:#0f3460"/>
+    </linearGradient>
+    <linearGradient id="boltGrad" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#00d4ff"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Main circle -->
+  <circle cx="100" cy="100" r="96" fill="url(#bgGrad)" />
+
+  <!-- Subtle inner ring for depth -->
+  <circle cx="100" cy="100" r="87" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1.2"/>
+
+  <!--
+    Classic two-part lightning bolt, visually centered.
+    Top slab slants left; bottom slab slants right — creates the iconic "crack".
+  -->
+  <polygon points="120,38  70,103  97,103  115,38"   fill="url(#boltGrad)" />
+  <polygon points="103,103  80,103  90,162  130,103" fill="url(#boltGrad)" />
+
+  <!-- Cyan accent dot — subtle event-pin nod -->
+  <circle cx="100" cy="174" r="6" fill="#00d4ff" opacity="0.9"/>
+</svg>

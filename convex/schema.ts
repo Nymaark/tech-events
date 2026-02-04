@@ -9,7 +9,7 @@ export default defineSchema({
     audience: v.string(),
     date: v.string(),
     description: v.string(),
-    image: v.optional(v.id('_storage')),
+    image: v.id('_storage'),
     location: v.string(),
     mode: v.string(),
     organizer: v.string(),

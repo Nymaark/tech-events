@@ -18,7 +18,13 @@ const EventCard = ({ imageUrl, title, slug, location, date, time }: TechEventTyp
 
   return (
     <Link href={`/events/${slug}`} id="event-card" onClick={handleClick}>
-      <Image src={imageUrl} alt={title} width={410} height={300} className="poster" />
+      <Image
+        src={imageUrl ?? '/images/placeholder.png'}
+        alt={title}
+        width={410}
+        height={300}
+        className="poster"
+      />
       <div className="flex flex-row gap-2">
         <Image src="/icons/pin.svg" alt="location pin" width={14} height={14} />
         <p>{location}</p>

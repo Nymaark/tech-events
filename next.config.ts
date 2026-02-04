@@ -2,6 +2,16 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'nautical-mockingbird-62.convex.cloud',
+        port: '',
+        pathname: '/api/storage/**',
+      },
+    ],
+  },
   async rewrites() {
     return [
       {

@@ -3,6 +3,7 @@ import { Schibsted_Grotesk, Martian_Mono } from 'next/font/google';
 import './globals.css';
 import LightRays from './lib/rays';
 import Navbar from './components/navbar';
+import { ConvexClientProvider } from './ConvexClientProvider';
 
 const schibsted = Schibsted_Grotesk({
   variable: '--font-schibsted-grotesk',
@@ -47,7 +48,9 @@ export default function RootLayout({
             saturation={1.2}
           />
         </div>
-        <main>{children}</main>
+        <main>
+          <ConvexClientProvider>{children}</ConvexClientProvider>
+        </main>
       </body>
     </html>
   );

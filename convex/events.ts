@@ -1,3 +1,4 @@
+import { string } from 'zod';
 import { query } from './_generated/server';
 import { v } from 'convex/values';
 
@@ -25,5 +26,33 @@ export const getEvent = query({
       ...event,
       imageUrl: event.image ? await ctx.storage.getUrl(event.image) : null,
     } : null;
+  },
+});
+
+export const getSimilarEvents = query({
+  args: {
+    tags: v.array(v.string()),
+    excludeSlug: v.optional(v.string()), // optional: exclude the current event
+  },
+  handler: async (ctx, args) => {
+    const events = await ctx.db.query("events").collect();
+    
+    // Filter events that have at least one matching tag
+    const similarEvents = events.filter((event) => {
+      // Optionally exclude the current event
+      if (args.excludeSlug && event.slug === args.excludeSlug) {
+        return false;
+      }
+      
+      // Check if event has any tag that's in the input tags
+      return event.tags.some((tag) => args.tags.includes(tag));
+    });
+    
+    return Promise.all(
+      similarEvents.map(async (event) => ({
+        ...event,
+        imageUrl: event.image ? await ctx.storage.getUrl(event.image) : null,
+      }))
+    );
   },
 });

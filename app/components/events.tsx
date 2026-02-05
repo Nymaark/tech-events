@@ -30,3 +30,35 @@ export default function FeaturedEvents() {
     </ul>
   );
 }
+
+type simEventsType = {
+    imageUrl: string | null;
+    _id: string;
+    _creationTime: number;
+    agenda: string[];
+    audience: string;
+    date: string;
+    description: string;
+    image: string;
+    location: string;
+    mode: string;
+    organizer: string;
+    overview: string;
+    slug: string;
+    tags: string[];
+    time: string;
+    title: string;
+    venue: string;
+}[]
+
+export function SimilarEvents({ similarEvents }: { similarEvents: simEventsType}) {
+    return (
+    <ul className="events">
+      {similarEvents!.map((event) => (
+        <li key={event.slug} className="list-none">
+          <EventCard {...event} />
+        </li>
+      ))}
+    </ul>
+  );
+}

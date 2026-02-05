@@ -2,6 +2,8 @@ import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
+import { BookEvent } from '@/app/components/BookEvent';
+import { SimilarEvents } from '@/app/components/events';
 
 const EventDetailsItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className="flex flex-row gap-2 items-center">
@@ -37,6 +39,14 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   const event = preloadedQueryResult(preloadedEvent);
   if (!event) return notFound();
+
+  const preloadedSimilarEvents = await preloadQuery(api.events.getSimilarEvents, {
+    tags: event.tags,
+    excludeSlug: event.slug,
+  });
+  const similarEvents = preloadedQueryResult(preloadedSimilarEvents);
+
+  const bookings = 10;
 
   const {
     description,
@@ -96,9 +106,30 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         </div>
         {/* Left side - Booking form */}
         <aside className="booking">
-          <p className="text-lg font-semibold">Book Event</p>
+          <div className="signup-card">
+            <h2>Book Your Spot</h2>
+            {bookings > 0 ? (
+              <p className="text-sm">Join {bookings} people who have already booked their spot!</p>
+            ) : (
+              <p className="text-sm">Be the first to book your spot!</p>
+            )}
+            <BookEvent />
+          </div>
         </aside>
       </div>
+      <div className='flex w-full flex-col gap-4 pt-20 '>
+            <h2>Similar Events</h2>
+              {similarEvents ? (
+                <>
+                  {(() => {
+                    const props: any = { similarEvents };
+                    return <SimilarEvents {...props} />;
+                  })()}
+                </>
+              ) : (
+                <p></p>
+              )}
+       </div>
     </section>
   );
 }

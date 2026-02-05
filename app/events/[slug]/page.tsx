@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { BookEvent } from '@/app/components/BookEvent';
 import { SimilarEvents } from '@/app/components/events';
+import { cacheLife } from 'next/cache';
 
 const EventDetailsItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className="flex flex-row gap-2 items-center">
@@ -34,6 +35,9 @@ const EventTags = ({ tags }: { tags: string[] }) => (
 );
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
+  'use cache';
+  cacheLife('hours');
+
   const { slug } = await params;
   const preloadedEvent = await preloadQuery(api.events.getEvent, { slug: slug });
 
@@ -117,19 +121,19 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           </div>
         </aside>
       </div>
-      <div className='flex w-full flex-col gap-4 pt-20 '>
-            <h2>Similar Events</h2>
-              {similarEvents ? (
-                <>
-                  {(() => {
-                    const props: any = { similarEvents };
-                    return <SimilarEvents {...props} />;
-                  })()}
-                </>
-              ) : (
-                <p></p>
-              )}
-       </div>
+      <div className="flex w-full flex-col gap-4 pt-20 ">
+        <h2>Similar Events</h2>
+        {similarEvents ? (
+          <>
+            {(() => {
+              const props: any = { similarEvents };
+              return <SimilarEvents {...props} />;
+            })()}
+          </>
+        ) : (
+          <p></p>
+        )}
+      </div>
     </section>
   );
 }

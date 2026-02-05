@@ -1,7 +1,11 @@
 import ExploreBtn from './components/explore-btn';
 import FeaturedEvents from './components/events';
+import { cacheLife } from 'next/cache';
 
-export default function Home() {
+export default async function Home() {
+  'use cache';
+  cacheLife('hours');
+
   return (
     <section>
       <h1 className="text-center">Your Next Great Tech Event Awaits</h1>

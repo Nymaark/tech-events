@@ -1,12 +1,15 @@
-'use client';
-
 import EventCard from './event-card';
 import EventCardSkeleton from './event-card-skeleton';
-import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { cacheLife } from 'next/cache';
+import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
 
-export default function FeaturedEvents() {
-  const techEvents = useQuery(api.events.getAllEvents);
+export default async function FeaturedEvents() {
+  'use cache';
+  cacheLife('hours')
+
+  const preloadedTechEvents = await preloadQuery(api.events.getAllEvents);
+  const techEvents = preloadedQueryResult(preloadedTechEvents)
 
   if (techEvents === undefined) {
     return (

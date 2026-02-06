@@ -3,7 +3,12 @@ import { v } from 'convex/values';
 
 export default defineSchema({
   // Other tables here...
-
+  bookings: defineTable({
+    userMail: v.string(),
+    eventSlug: v.string(),
+    })
+      .index("by_event", ["eventSlug"])
+      .index("by_email_event", ["userMail", "eventSlug"]),
   events: defineTable({
     agenda: v.array(v.string()),
     audience: v.string(),

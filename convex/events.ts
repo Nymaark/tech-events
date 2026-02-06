@@ -1,5 +1,5 @@
 import { string } from 'zod';
-import { query } from './_generated/server';
+import { query, mutation } from './_generated/server';
 import { v } from 'convex/values';
 
 export const getAllEvents = query({
@@ -22,10 +22,12 @@ export const getEvent = query({
       .query('events')
       .filter((q) => q.eq(q.field('slug'), slug))
       .unique();
-    return event ? { 
-      ...event,
-      imageUrl: event.image ? await ctx.storage.getUrl(event.image) : null,
-    } : null;
+    return event
+      ? {
+          ...event,
+          imageUrl: event.image ? await ctx.storage.getUrl(event.image) : null,
+        }
+      : null;
   },
 });
 
@@ -35,19 +37,19 @@ export const getSimilarEvents = query({
     excludeSlug: v.optional(v.string()), // optional: exclude the current event
   },
   handler: async (ctx, args) => {
-    const events = await ctx.db.query("events").collect();
-    
+    const events = await ctx.db.query('events').collect();
+
     // Filter events that have at least one matching tag
     const similarEvents = events.filter((event) => {
       // Optionally exclude the current event
       if (args.excludeSlug && event.slug === args.excludeSlug) {
         return false;
       }
-      
+
       // Check if event has any tag that's in the input tags
       return event.tags.some((tag) => args.tags.includes(tag));
     });
-    
+
     return Promise.all(
       similarEvents.map(async (event) => ({
         ...event,
@@ -56,3 +58,40 @@ export const getSimilarEvents = query({
     );
   },
 });
+
+export const createBooking = mutation({
+  args: {
+    userMail: v.string(),
+    eventSlug: v.string(),
+  },
+  handler: async (ctx, { userMail, eventSlug }) => {
+    const existing = await ctx.db
+      .query("bookings")
+      .withIndex("by_email_event", q =>
+        q.eq("userMail", userMail).eq("eventSlug", eventSlug)
+      )
+      .first();
+
+    if (existing) {
+      throw new Error("Booking already exists for this email");
+    }
+    
+    return await ctx.db.insert('bookings', {
+      userMail: userMail,
+      eventSlug: eventSlug,
+    });
+  },
+});
+
+export const getBookingCount = query({
+  args: {
+    eventSlug: v.string(),
+  },
+  handler: async (ctx, { eventSlug }) => {
+    const bookings = await ctx.db.query('bookings')
+      .withIndex("by_event", q => q.eq("eventSlug", eventSlug))
+      .collect()
+      
+    return bookings.length
+  }
+})

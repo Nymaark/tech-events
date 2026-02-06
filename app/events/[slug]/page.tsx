@@ -50,7 +50,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   });
   const similarEvents = preloadedQueryResult(preloadedSimilarEvents);
 
-  const bookings = 10;
+  const preloadedBookings = await preloadQuery(api.events.getBookingCount, { eventSlug: slug})
+  const bookings = preloadedQueryResult(preloadedBookings);
 
   const {
     description,
@@ -112,12 +113,13 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <aside className="booking">
           <div className="signup-card">
             <h2>Book Your Spot</h2>
-            {bookings > 0 ? (
+            {bookings > 0 ? 
+            bookings == 1 ? (<p className='text-sm'>Join other people who have already booked their spot!</p>) : (
               <p className="text-sm">Join {bookings} people who have already booked their spot!</p>
             ) : (
               <p className="text-sm">Be the first to book your spot!</p>
             )}
-            <BookEvent />
+            <BookEvent slug={slug} />
           </div>
         </aside>
       </div>

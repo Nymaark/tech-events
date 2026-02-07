@@ -111,6 +111,14 @@
     @apply border-border outline-ring/50;
   }
 
+  th {
+    @apply py-4 text-left border-1 border-slate-600/40 pl-5;
+  }
+
+  td {
+    @apply py-5 pl-5 text-left border-1 border-slate-600/40;
+  }
+
   body {
     @apply bg-background text-foreground;
   }

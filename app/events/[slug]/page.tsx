@@ -2,7 +2,7 @@ import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { BookEvent } from '@/app/components/BookEvent';
+import { BookEvent } from '@/app/components/book-event';
 import { SimilarEvents } from '@/app/components/events';
 import { cacheLife } from 'next/cache';
 
@@ -50,7 +50,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   });
   const similarEvents = preloadedQueryResult(preloadedSimilarEvents);
 
-  const preloadedBookings = await preloadQuery(api.events.getBookingCount, { eventSlug: slug})
+  const preloadedBookings = await preloadQuery(api.events.getBookingCount, { eventSlug: slug });
   const bookings = preloadedQueryResult(preloadedBookings);
 
   const {
@@ -113,9 +113,14 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <aside className="booking">
           <div className="signup-card">
             <h2>Book Your Spot</h2>
-            {bookings > 0 ? 
-            bookings == 1 ? (<p className='text-sm'>Join other people who have already booked their spot!</p>) : (
-              <p className="text-sm">Join {bookings} people who have already booked their spot!</p>
+            {bookings > 0 ? (
+              bookings == 1 ? (
+                <p className="text-sm">Join other people who have already booked their spot!</p>
+              ) : (
+                <p className="text-sm">
+                  Join {bookings} people who have already booked their spot!
+                </p>
+              )
             ) : (
               <p className="text-sm">Be the first to book your spot!</p>
             )}

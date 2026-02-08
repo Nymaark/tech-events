@@ -66,16 +66,14 @@ export const createBooking = mutation({
   },
   handler: async (ctx, { userMail, eventSlug }) => {
     const existing = await ctx.db
-      .query("bookings")
-      .withIndex("by_email_event", q =>
-        q.eq("userMail", userMail).eq("eventSlug", eventSlug)
-      )
+      .query('bookings')
+      .withIndex('by_email_event', (q) => q.eq('userMail', userMail).eq('eventSlug', eventSlug))
       .first();
 
     if (existing) {
-      throw new Error("Booking already exists for this email");
+      throw new Error('Booking already exists for this email');
     }
-    
+
     return await ctx.db.insert('bookings', {
       userMail: userMail,
       eventSlug: eventSlug,
@@ -88,10 +86,41 @@ export const getBookingCount = query({
     eventSlug: v.string(),
   },
   handler: async (ctx, { eventSlug }) => {
-    const bookings = await ctx.db.query('bookings')
-      .withIndex("by_event", q => q.eq("eventSlug", eventSlug))
-      .collect()
-      
-    return bookings.length
+    const bookings = await ctx.db
+      .query('bookings')
+      .withIndex('by_event', (q) => q.eq('eventSlug', eventSlug))
+      .collect();
+
+    return bookings.length;
+  },
+});
+
+export const generateUploadUrl = mutation({
+  args: {},
+  handler: async (ctx) => {
+    return await ctx.storage.generateUploadUrl();
+  },
+});
+
+
+export const uploadEvent = mutation({
+  args: {
+    agenda: v.array(v.string()),
+    audience: v.string(),
+    date: v.string(),
+    description: v.string(),
+    image: v.id("_storage"),
+    location: v.string(),
+    mode: v.string(),
+    organizer: v.string(),
+    overview: v.string(),
+    slug: v.string(),
+    tags: v.array(v.string()),
+    time: v.string(),
+    title: v.string(),
+    venue: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.insert("events", args)
   }
 })

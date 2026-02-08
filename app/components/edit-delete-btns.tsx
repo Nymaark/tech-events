@@ -2,7 +2,7 @@
 
 export function EditBtn({ slug }: { slug: string }) {
     return (
-        <button className="text-primary hover:cursor-pointer hover:text-primary/70 font-bold underline">Edit</button>
+        <button className="text-primary hover:cursor-pointer hover:text-primary/70 font-bold underline"><a href={`/manage-events/edit-event/${slug}`}>Edit</a></button>
     )
 }
 

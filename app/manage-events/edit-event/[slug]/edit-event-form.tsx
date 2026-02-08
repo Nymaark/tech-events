@@ -4,36 +4,70 @@ import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
-export function Page() {
-  const [tags, setTags] = useState<string[]>([]);
+type EventData = {
+  title: string;
+  audience: string;
+  mode: string;
+  time: string;
+  location: string;
+  slug: string;
+  organizer: string;
+  description: string;
+  tags: string[];
+  agenda: string[];
+  image?: string | null;
+  overview: string;
+  venue: string;
+  date: string;
+};
+
+export default function EditEventForm({ eventData }: { eventData: EventData }) {
+  const {
+    title,
+    audience,
+    mode,
+    time,
+    location,
+    slug,
+    organizer,
+    description,
+    tags,
+    agenda,
+    image,
+    overview,
+    venue,
+    date,
+  } = eventData;
+
+  const [qTags, setTags] = useState<string[]>(tags);
   const [currentTagInput, setCurrentTagInput] = useState('');
 
-  const [agendas, setAgendas] = useState<string[]>([]);
+  const [qAgendas, setAgendas] = useState<string[]>(agenda);
   const [currentAgendaInput, setCurrentAgendaInput] = useState('');
 
   const uploadEvent = useMutation(api.events.uploadEvent);
   const generateUploadUrl = useMutation(api.events.generateUploadUrl);
 
   const removeTag = (indexToRemove: number) => {
-    setTags(tags.filter((_, index) => index !== indexToRemove));
+    setTags(qTags.filter((_, index) => index !== indexToRemove));
   };
 
   const handleTagKeyDown = (e: { key: string; preventDefault: () => void }) => {
     if (e.key === 'Enter' && currentTagInput.trim()) {
       e.preventDefault();
-      setTags([...tags, currentTagInput.trim()]);
+      setTags([...qTags, currentTagInput.trim()]);
       setCurrentTagInput('');
     }
   };
 
   const removeAgenda = (indexToRemove: number) => {
-    setAgendas(agendas.filter((_, index) => index !== indexToRemove));
+    setAgendas(qAgendas.filter((_, index) => index !== indexToRemove));
   };
 
   const handleAgendaKeyDown = (e: { key: string; preventDefault: () => void }) => {
     if (e.key === 'Enter' && currentAgendaInput.trim()) {
       e.preventDefault();
-      setAgendas([...agendas, currentAgendaInput.trim()]);
+      setAgendas([...qAgendas, currentAgendaInput.trim()]);
       setCurrentAgendaInput('');
     }
   };
@@ -74,7 +108,7 @@ export function Page() {
     const { storageId } = await result.json();
 
     const eventData = {
-      agenda: agendas,
+      agenda: qAgendas,
       audience: String(formData.get('audience') ?? ''),
       date: String(formData.get('date') ?? ''),
       description: String(formData.get('description') ?? ''),
@@ -84,7 +118,7 @@ export function Page() {
       organizer: String(formData.get('organizer') ?? ''),
       overview: String(formData.get('overview') ?? ''),
       slug: slug,
-      tags: tags,
+      tags: qTags,
       time: String(formData.get('time') ?? ''),
       title: String(formData.get('title') ?? ''),
       venue: String(formData.get('venue') ?? ''),
@@ -98,36 +132,68 @@ export function Page() {
 
   return (
     <div className="flex flex-col w-full items-center">
-      <h1>Create Event</h1>
+      <h1>Edit Event</h1>
+      <h2 className="font-semibold text-2xl mt-5">{title}</h2>
       <form id="create-event" onSubmit={handleSubmit} className="pt-12">
         <label>
           Event Title:
-          <input name="title" type="text" required placeholder="Type event title here..." />
+          <input
+            name="title"
+            defaultValue={title}
+            type="text"
+            required
+            placeholder="Type event title here..."
+          />
         </label>
         <label>
           Location:
-          <input name="location" type="text" required placeholder="E.g. Las Vegas, Nevada"></input>
+          <input
+            name="location"
+            defaultValue={location}
+            type="text"
+            required
+            placeholder="E.g. Las Vegas, Nevada"
+          ></input>
         </label>
         <label>
           Date:
-          <input name="date" type="text" required placeholder="E.g. March 16th 2026"></input>
+          <input
+            name="date"
+            type="text"
+            defaultValue={date}
+            required
+            placeholder="E.g. March 16th 2026"
+          ></input>
         </label>
         <label>
           Time:
-          <input name="time" type="text" required placeholder="E.g. 9:00 AM" />
+          <input name="time" type="text" defaultValue={time} required placeholder="E.g. 9:00 AM" />
         </label>
         <label>
           Mode:
-          <input name="mode" type="text" required placeholder="E.g. Hybrid (In-person & Virtual)" />
+          <input
+            name="mode"
+            defaultValue={mode}
+            type="text"
+            required
+            placeholder="E.g. Hybrid (In-person & Virtual)"
+          />
         </label>
         <label>
           Venue:
-          <input name="venue" type="text" required placeholder="E.g. The Venetian Expo" />
+          <input
+            name="venue"
+            defaultValue={venue}
+            type="text"
+            required
+            placeholder="E.g. The Venetian Expo"
+          />
         </label>
         <label>
           Audience:
           <input
             name="audience"
+            defaultValue={audience}
             type="text"
             required
             placeholder="E.g. Developers, Researchers, Business Leaders..."
@@ -135,12 +201,19 @@ export function Page() {
         </label>
         <label>
           Organizer:
-          <input name="organizer" type="text" required placeholder="E.g. NVIDIA Corporation" />
+          <input
+            name="organizer"
+            defaultValue={organizer}
+            type="text"
+            required
+            placeholder="E.g. NVIDIA Corporation"
+          />
         </label>
         <label>
           Description:
           <textarea
             name="description"
+            defaultValue={description}
             placeholder="Enter event description..."
             required
             className="block mt-1 mb-8 border-1 border-slate-400/60 focus:outline-hidden pl-1 focus:border-slate-300 w-full font-normal"
@@ -150,6 +223,7 @@ export function Page() {
           Overview:
           <textarea
             name="overview"
+            defaultValue={overview}
             placeholder="Enter event overview..."
             required
             className="block border-1 mt-1 mb-8 border-slate-400/60 focus:outline-hidden pl-1 focus:border-slate-300 w-full font-normal"
@@ -160,7 +234,7 @@ export function Page() {
           <input
             name="tags"
             className="mb-4"
-            value={currentTagInput}
+            defaultValue={currentTagInput}
             onKeyDown={handleTagKeyDown}
             onChange={(e) => setCurrentTagInput(e.target.value)}
             type="text"
@@ -168,7 +242,7 @@ export function Page() {
           />
         </label>
         <div>
-          {tags.map((tag, index) => (
+          {qTags.map((tag, index) => (
             <button
               className="pill border-1 border-slate-400 mb-7 mx-2 pr-4 hover:border-slate-400/30 hover:cursor-pointer"
               type="button"
@@ -194,7 +268,7 @@ export function Page() {
         </label>
         <div className="mb-8">
           <ul>
-            {agendas.map((agenda, index) => (
+            {qAgendas.map((agenda, index) => (
               <li key={index}>
                 <button
                   className="hover:text-slate-300/50 hover:cursor-pointer"
@@ -209,7 +283,7 @@ export function Page() {
           </ul>
         </div>
         <label>
-          Upload Event Photo:
+          <span className='font-normal text-slate-400'>(Optional)</span> Update Event Photo:
           <input
             name="image"
             className="border-1 p-1 hover:text-primary/90 hover:cursor-pointer mb-1"
@@ -218,11 +292,9 @@ export function Page() {
           />
         </label>
         <button className="bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 mt-12 py-2.5 text-lg font-semibold text-black">
-          Upload Event
+          Update Event
         </button>
       </form>
     </div>
   );
 }
-
-export default Page;

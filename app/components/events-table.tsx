@@ -22,7 +22,7 @@ export default async function EventsTable() {
         </thead>
         <tbody>
           {events.map((event) => (
-            <tr>
+            <tr key={event.slug}>
               <td>
                 <div className="flex flex-row items-center">
                   <div className="relative w-11 h-11">

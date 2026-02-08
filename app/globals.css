@@ -278,4 +278,16 @@
       }
     }
   }
+
+  #create-event {
+    @apply bg-slate-800/50 rounded-lg p-15 mt-10 md:min-w-200 max-w-200;
+
+    label {
+      @apply font-semibold;
+
+      input {
+        @apply font-normal block w-full border-b-1 border-slate-400/60 mt-1 mb-8 focus:outline-hidden focus:border-slate-300;
+      }
+    }
+  }
 }

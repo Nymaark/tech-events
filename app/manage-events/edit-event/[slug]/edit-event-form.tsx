@@ -138,6 +138,7 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
 
   return (
     <div className="flex flex-col w-full items-center">
+      <h1 className="w-full text-center">Edit Event</h1>
       <h2 className="font-semibold text-2xl mt-5">{title}</h2>
       <form id="create-event" onSubmit={handleSubmit} className="pt-12">
         <label>

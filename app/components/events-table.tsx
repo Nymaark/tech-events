@@ -2,8 +2,13 @@ import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
 import { api } from '@/convex/_generated/api';
 import Image from 'next/image';
 import { EditBtn, DeleteBtn } from './edit-delete-btns';
+import { headers } from 'next/headers';
 
 export default async function EventsTable() {
+  // Call headers() first to force dynamic rendering. Needed because of Convex and Next.js conflict
+  await headers();
+  
+  // Now preload the query
   const preloadedEvents = await preloadQuery(api.events.getAllEvents);
   const events = preloadedQueryResult(preloadedEvents);
 

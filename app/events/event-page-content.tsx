@@ -4,8 +4,6 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { BookEvent } from '@/app/components/book-event';
 import { SimilarEvents } from '@/app/components/events';
-import { cacheLife } from 'next/cache';
-import { Suspense } from 'react';
 
 const EventDetailsItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className="flex flex-row gap-2 items-center">
@@ -36,8 +34,6 @@ const EventTags = ({ tags }: { tags: string[] }) => (
 );
 
 export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
-  'use cache';
-  cacheLife('hours');
 
   const { slug } = await params;
   const preloadedEvent = await preloadQuery(api.events.getEvent, { slug: slug });

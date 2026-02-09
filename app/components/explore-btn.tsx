@@ -12,7 +12,9 @@ const ExploreBtn = () => {
 
   return (
     <button type="button" id="explore-btn" className="mt-7 mx-auto" onClick={handleClick}>
-      <a href="#events">Explore Events</a>
+      <a href="#events" className="transition-all duration-300">
+        Explore Events
+      </a>
       <Image src="/icons/arrow-down.svg" alt="arrow-down" width={24} height={24} className="ml-3" />
     </button>
   );

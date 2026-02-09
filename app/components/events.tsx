@@ -26,7 +26,7 @@ export default async function FeaturedEvents() {
   return (
     <ul className="events">
       {techEvents!.map((event) => (
-        <li key={event.slug} className="list-none">
+        <li key={event.slug} className="list-none hover:scale-103 transition-all duration-200">
           <EventCard {...event} />
         </li>
       ))}

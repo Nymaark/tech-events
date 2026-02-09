@@ -3,8 +3,11 @@
 import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { Id } from '@/convex/_generated/dataModel';
+import { redirect } from 'next/navigation';
 
 type EventData = {
+  _id: Id<"events">,
   title: string;
   audience: string;
   mode: string;
@@ -15,7 +18,7 @@ type EventData = {
   description: string;
   tags: string[];
   agenda: string[];
-  image?: string | null;
+  image: Id<"_storage">;
   overview: string;
   venue: string;
   date: string;
@@ -23,6 +26,7 @@ type EventData = {
 
 export default function EditEventForm({ eventData }: { eventData: EventData }) {
   const {
+    _id,
     title,
     audience,
     mode,
@@ -45,7 +49,7 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
   const [qAgendas, setAgendas] = useState<string[]>(agenda);
   const [currentAgendaInput, setCurrentAgendaInput] = useState('');
 
-  const uploadEvent = useMutation(api.events.uploadEvent);
+  const updateEvent = useMutation(api.events.updateEvent);
   const generateUploadUrl = useMutation(api.events.generateUploadUrl);
 
   const removeTag = (indexToRemove: number) => {
@@ -83,36 +87,39 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
       .replace(/[^\w\s-]/g, '')
       .replace(/[\s_-]+/g, '-')
       .replace(/^-+|-+$/g, '');
+      
+    let imageId: Id<"_storage"> = image;
 
-    // Upload Image to Convex database and get reference storageID to store in the event document:
-    const imageFile = formData.get('image') as File | null;
-    if (!imageFile) {
-      console.error('No image file provided');
-      return;
+    const imageFile = formData.get('image') as File;
+
+    if (imageFile && imageFile.size > 0) {
+      // Upload Image to Convex database and get reference storageID to store in the event document:
+
+      // useMutation returns a function; call it to get the upload URL (string)
+      const uploadUrl = await generateUploadUrl();
+
+      // Upload the file to the returned URL)
+      const result = await fetch(uploadUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': imageFile.type },
+        body: imageFile,
+      });
+
+      if (!result.ok) {
+        console.error('Image upload failed', result.statusText);
+        return;
+      }
+      const { storageId } = await result.json();
+      imageId = storageId
     }
-
-    // useMutation returns a function; call it to get the upload URL (string)
-    const uploadUrl = await generateUploadUrl();
-
-    // Upload the file to the returned URL)
-    const result = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': imageFile.type },
-      body: imageFile,
-    });
-
-    if (!result.ok) {
-      console.error('Image upload failed', result.statusText);
-      return;
-    }
-    const { storageId } = await result.json();
 
     const eventData = {
+      id: _id,
       agenda: qAgendas,
       audience: String(formData.get('audience') ?? ''),
       date: String(formData.get('date') ?? ''),
       description: String(formData.get('description') ?? ''),
-      image: storageId,
+      image: imageId as Id<"_storage">,
       location: String(formData.get('location') ?? ''),
       mode: String(formData.get('mode') ?? ''),
       organizer: String(formData.get('organizer') ?? ''),
@@ -124,15 +131,13 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
       venue: String(formData.get('venue') ?? ''),
     };
 
-    // Process/validate the data here
-    console.log('Event data:', eventData);
+    updateEvent(eventData);
 
-    uploadEvent(eventData);
+    setTimeout(redirect('/manage-events'), 500)
   };
 
   return (
     <div className="flex flex-col w-full items-center">
-      <h1>Edit Event</h1>
       <h2 className="font-semibold text-2xl mt-5">{title}</h2>
       <form id="create-event" onSubmit={handleSubmit} className="pt-12">
         <label>
@@ -234,7 +239,7 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
           <input
             name="tags"
             className="mb-4"
-            defaultValue={currentTagInput}
+            value={currentTagInput}
             onKeyDown={handleTagKeyDown}
             onChange={(e) => setCurrentTagInput(e.target.value)}
             type="text"
@@ -244,7 +249,7 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
         <div>
           {qTags.map((tag, index) => (
             <button
-              className="pill border-1 border-slate-400 mb-7 mx-2 pr-4 hover:border-slate-400/30 hover:cursor-pointer"
+              className="pill border-1 border-slate-400 mb-7 mx-2 pr-4 bg-slate-800/50 hover:border-slate-400/30 hover:cursor-pointer"
               type="button"
               onClick={() => removeTag(index)}
               key={index}
@@ -288,10 +293,9 @@ export default function EditEventForm({ eventData }: { eventData: EventData }) {
             name="image"
             className="border-1 p-1 hover:text-primary/90 hover:cursor-pointer mb-1"
             type="file"
-            required
           />
         </label>
-        <button className="bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 mt-12 py-2.5 text-lg font-semibold text-black">
+        <button className="bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 mt-12 py-2.5 text-lg font-semibold text-white">
           Update Event
         </button>
       </form>

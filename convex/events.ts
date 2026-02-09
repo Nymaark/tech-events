@@ -124,3 +124,28 @@ export const uploadEvent = mutation({
     await ctx.db.insert("events", args)
   }
 })
+
+
+export const updateEvent = mutation({
+  args: {
+    id: v.id("events"),
+    // any fields you want to allow updating:
+    agenda: v.optional(v.array(v.string())),
+    audience: v.optional(v.string()),
+    date: v.optional(v.string()),
+    description: v.optional(v.string()),
+    image: v.optional(v.id("_storage")),
+    location: v.optional(v.string()),
+    mode: v.optional(v.string()),
+    organizer: v.optional(v.string()),
+    overview: v.optional(v.string()),
+    slug: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+    time: v.optional(v.string()),
+    title: v.optional(v.string()),
+    venue: v.optional(v.string()),
+  },
+  handler: async (ctx, { id, ...patch }) => {
+    await ctx.db.patch("events", id, patch);
+  },
+});

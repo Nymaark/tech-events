@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { redirect } from 'next/navigation';
 
 export function Page() {
   const [tags, setTags] = useState<string[]>([]);
@@ -94,6 +95,8 @@ export function Page() {
     console.log('Event data:', eventData);
 
     uploadEvent(eventData);
+
+    setTimeout(redirect('/manage-events'), 500)
   };
 
   return (
@@ -217,7 +220,7 @@ export function Page() {
             required
           />
         </label>
-        <button className="bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 mt-12 py-2.5 text-lg font-semibold text-black">
+        <button className="bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 mt-12 py-2.5 text-lg font-semibold text-white">
           Upload Event
         </button>
       </form>

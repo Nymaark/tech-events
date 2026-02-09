@@ -7,14 +7,14 @@ export default async function Home() {
   cacheLife('hours');
 
   return (
-    <section>
-      <h1 className="text-center">Your Next Great Tech Event Awaits</h1>
-      <p className="text-center mt-5">
+    <section className='flex flex-col items-center justify-center'>
+      <h1 className="text-center mt-20 lg:text-[90px] max-w-180">Your Next Great Tech Event Awaits</h1>
+      <p className="text-center mt-7 mb-3">
         Discover, connect, and grow at the most exciting tech events near you.
       </p>
       <ExploreBtn />
 
-      <div className="mt-20 space-y-7">
+      <div className="mt-20 space-y-7" id="events">
         <h3>Featured Events</h3>
         <FeaturedEvents />
       </div>

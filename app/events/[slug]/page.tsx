@@ -73,7 +73,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
   return (
     <section id="event">
       <div className="header">
-        <h1>{title}</h1>
+        <h1 className='pb-2 mt-9'>{title}</h1>
         <p className="mt-2">{description}</p>
       </div>
       <div className="details">

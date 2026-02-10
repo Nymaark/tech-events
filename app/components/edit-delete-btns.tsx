@@ -1,4 +1,6 @@
 'use client';
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export function EditBtn({ slug }: { slug: string }) {
     return (
@@ -7,7 +9,13 @@ export function EditBtn({ slug }: { slug: string }) {
 }
 
 export function DeleteBtn({ slug }: { slug: string }) {
+    const deleteEvent = useMutation(api.events.deleteEvent)
+
+    const handleDelete = (slug: string) => {
+        deleteEvent({ slug: slug })
+    }
+
     return (
-        <button className="hover:text-red-400 hover:cursor-pointer underline font-bold">Delete</button>
+        <button onClick={() => handleDelete(slug)} className="hover:text-red-400 hover:cursor-pointer underline font-bold">Delete</button>
     )
 }

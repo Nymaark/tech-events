@@ -149,3 +149,16 @@ export const updateEvent = mutation({
     await ctx.db.patch("events", id, patch);
   },
 });
+
+
+export const deleteEvent = mutation({
+  args: {
+    slug: v.string(),
+  },
+  handler: async (ctx, { slug }) => {
+    const event = await ctx.db.query("events").filter((q) => q.eq(q.field("slug"), slug)).first();
+    if (event) {
+      await ctx.db.delete("events", event._id)
+    }
+  }
+})

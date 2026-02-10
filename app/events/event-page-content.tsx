@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { BookEvent } from '@/app/components/book-event';
 import { SimilarEvents } from '@/app/components/events';
 import { cacheLife } from 'next/cache';
-import { Suspense } from 'react';
 
 const EventDetailsItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className="flex flex-row gap-2 items-center">

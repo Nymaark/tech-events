@@ -1,12 +1,12 @@
 import EventCard from './event-card';
 import EventCardSkeleton from './event-card-skeleton';
 import { api } from '@/convex/_generated/api';
-import { cacheLife } from 'next/cache';
 import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 7200;
+
 export default async function FeaturedEvents() {
-  'use cache';
-  cacheLife('hours')
 
   const preloadedTechEvents = await preloadQuery(api.events.getAllEvents);
   const techEvents = preloadedQueryResult(preloadedTechEvents)

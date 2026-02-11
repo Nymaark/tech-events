@@ -1,10 +1,12 @@
-import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
+'use client';
+
+import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { BookEvent } from '@/app/components/book-event';
 import { SimilarEvents } from '@/app/components/events';
-import { cacheLife } from 'next/cache';
+import { SkeletonText } from '@/app/components/loading-indicator';
 
 const EventDetailsItem = ({ icon, alt, label }: { icon: string; alt: string; label: string }) => (
   <div className="flex flex-row gap-2 items-center">
@@ -34,22 +36,27 @@ const EventTags = ({ tags }: { tags: string[] }) => (
   </div>
 );
 
-export default async function EventPage({ params }: { params: Promise<{ slug: string }> }) {
+export default function EventPage({ params }: { params: { slug: string } }) {
 
-  const { slug } = await params;
-  const preloadedEvent = await preloadQuery(api.events.getEvent, { slug: slug });
+  const { slug } = params;
+  const event = useQuery(api.events.getEvent, { slug: slug });
 
-  const event = preloadedQueryResult(preloadedEvent);
-  if (!event) return notFound();
-
-  const preloadedSimilarEvents = await preloadQuery(api.events.getSimilarEvents, {
+  const similarEvents = useQuery(api.events.getSimilarEvents, event ? {
     tags: event.tags,
     excludeSlug: event.slug,
-  });
-  const similarEvents = preloadedQueryResult(preloadedSimilarEvents);
+  } : 'skip');
 
-  const preloadedBookings = await preloadQuery(api.events.getBookingCount, { eventSlug: slug });
-  const bookings = preloadedQueryResult(preloadedBookings);
+  const bookings = useQuery(api.events.getBookingCount, event ? { eventSlug: slug } : 'skip');
+
+  if (event === undefined) {
+    return (
+      <>
+        <SkeletonText />
+      </>
+    )
+  }
+
+  if (event === null) return notFound();
 
   const {
     description,
@@ -111,7 +118,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         <aside className="booking">
           <div className="signup-card">
             <h2>Book Your Spot</h2>
-            {bookings > 0 ? (
+            {bookings! > 0 ? (
               bookings == 1 ? (
                 <p className="text-sm">Join other people who have already booked their spot!</p>
               ) : (

@@ -30,27 +30,29 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth">
       <body className={`${schibsted.variable} ${martian.variable} min-h-screen antialiased`}>
+        <ConvexClientProvider>
         <Navbar />
-        <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
-          <LightRays
-            raysOrigin="top-center-offset"
-            raysColor="#0270e2"
-            raysSpeed={0.5}
-            lightSpread={1.8}
-            rayLength={2}
-            followMouse={true}
-            mouseInfluence={0.03}
-            noiseAmount={0}
-            distortion={0}
-            className="custom-rays"
-            pulsating={false}
-            fadeDistance={1}
-            saturation={1.9}
-          />
-        </div>
-        <main>
-          <ConvexClientProvider>{children}</ConvexClientProvider>
-        </main>
+          <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+            <LightRays
+              raysOrigin="top-center-offset"
+              raysColor="#0270e2"
+              raysSpeed={0.5}
+              lightSpread={1.8}
+              rayLength={2}
+              followMouse={true}
+              mouseInfluence={0.03}
+              noiseAmount={0}
+              distortion={0}
+              className="custom-rays"
+              pulsating={false}
+              fadeDistance={1}
+              saturation={1.9}
+            />
+          </div>
+          <main>
+            {children}
+          </main>
+        </ConvexClientProvider>
       </body>
     </html>
   );

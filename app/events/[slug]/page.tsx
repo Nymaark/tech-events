@@ -1,15 +1,16 @@
-import { Suspense } from "react";
-import EventPage from "../event-page-content";
-import { SkeletonText } from "@/app/components/loading-indicator";
-import { cacheLife } from 'next/cache';
+'use client';
 
-export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
-  'use cache';
-  cacheLife('hours');
+import { Suspense } from 'react';
+import { useParams } from 'next/navigation';
+import EventPage from './event-page-content';
+import { SkeletonText } from '@/app/components/loading-indicator';
+
+export default function Page() {
+  const params: { slug: string} = useParams()
   
   return (
     <Suspense fallback={<SkeletonText />}>
       <EventPage params={params} />
     </Suspense>
-  )
+  );
 }

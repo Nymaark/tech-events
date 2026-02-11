@@ -1,10 +1,10 @@
 import ExploreBtn from './components/explore-btn';
 import FeaturedEvents from './components/events';
-import { cacheLife } from 'next/cache';
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 7200;
 
 export default async function Home() {
-  'use cache';
-  cacheLife('hours');
 
   return (
     <section className='flex flex-col items-center justify-center'>

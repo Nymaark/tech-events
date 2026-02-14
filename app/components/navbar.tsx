@@ -34,7 +34,7 @@ function Navbar() {
           <Link href="/" onClick={() => handleNavLinkClick('Home')}>
             Home
           </Link>
-          <Link href="/" onClick={() => handleNavLinkClick('Events')}>
+          <Link href="/events" onClick={() => handleNavLinkClick('Events')}>
             Events
           </Link>
           <Link href="/manage-events" onClick={() => handleNavLinkClick('Create Event')}>

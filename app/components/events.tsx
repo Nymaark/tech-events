@@ -58,7 +58,7 @@ export function SimilarEvents({ similarEvents }: { similarEvents: simEventsType}
     return (
     <ul className="events">
       {similarEvents!.map((event) => (
-        <li key={event.slug} className="list-none">
+        <li key={event.slug} className="list-none hover:scale-103 transition-all duration-200">
           <EventCard {...event} />
         </li>
       ))}

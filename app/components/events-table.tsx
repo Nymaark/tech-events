@@ -1,16 +1,17 @@
-import { preloadQuery, preloadedQueryResult } from 'convex/nextjs';
+'use client';
+
+import { SkeletonTable } from '../manage-events/skeleton-table';
+import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import Image from 'next/image';
 import { EditBtn, DeleteBtn } from './edit-delete-btns';
-import { headers } from 'next/headers';
 
-export default async function EventsTable() {
-  // Call headers() first to force dynamic rendering. Needed because of Convex and Next.js conflict
-  await headers();
-  
-  // Now preload the query
-  const preloadedEvents = await preloadQuery(api.events.getAllEvents);
-  const events = preloadedQueryResult(preloadedEvents);
+export default function EventsTable() {
+  const events = useQuery(api.events.getAllEvents);
+
+  if (!events) {
+    return <SkeletonTable />
+  }
 
   return (
     <div className="w-full lg:overflow-auto overflow-x-scroll">

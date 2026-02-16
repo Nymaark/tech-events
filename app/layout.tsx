@@ -4,6 +4,7 @@ import './globals.css';
 import LightRays from './lib/rays';
 import Navbar from './components/navbar';
 import { ConvexClientProvider } from './ConvexClientProvider';
+import Footer from '@/components/footer';
 
 const schibsted = Schibsted_Grotesk({
   variable: '--font-schibsted-grotesk',
@@ -32,7 +33,7 @@ export default function RootLayout({
       <body className={`${schibsted.variable} ${martian.variable} min-h-screen antialiased`}>
         <ConvexClientProvider>
         <Navbar />
-          <div className="absolute inset-0 top-0 z-[-1] min-h-screen">
+          <div className="fixed inset-0 top-0 z-[-1] min-h-screen">
             <LightRays
               raysOrigin="top-center-offset"
               raysColor="#0270e2"
@@ -53,6 +54,7 @@ export default function RootLayout({
             {children}
           </main>
         </ConvexClientProvider>
+        <Footer />
       </body>
     </html>
   );

@@ -33,13 +33,16 @@ export default function EventsList() {
     return (
       <>
         <div className="flex flex-wrap gap-2 mb-6">
-          {[...Array(5)].map((_, i) => (
+          {[...Array(8)].map((_, i) => (
             <div
               key={i}
-              className="h-8 w-20 bg-blue-950/70 rounded-[6px] animate-pulse"
+              className="h-8 w-20 bg-slate-400/20 rounded-[6px] animate-pulse"
               aria-hidden
             />
           ))}
+        </div>
+        <div className="flex justify-center relative z-10">
+          <div className="mt-[-10] mb-3 flex rounded-full border px-6 py-2 bg-slate-400/20 w-35 h-9 animate-pulse"></div>
         </div>
         <ul className="events">
           {[...Array(6)].map((_, index) => (
@@ -94,7 +97,7 @@ export default function EventsList() {
                   <button
                     type="button"
                     onClick={() => setTagsExpanded(true)}
-                    className="border-slate-700 bg-slate-700/70 mt-1 hover:bg-primary/90 flex w-fit cursor-pointer  rounded-full border px-6 py-2 text-center  text-sm font-medium"
+                    className="border-slate-700 bg-slate-700/70 mt-1 transition-all duration-200 ease-out hover:bg-primary/90 flex w-fit cursor-pointer  rounded-full border px-6 py-2 text-center  text-sm font-medium"
                   >
                     Show All Tags
                   </button>
